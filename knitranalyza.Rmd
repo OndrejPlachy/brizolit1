@@ -1,0 +1,84 @@
+---
+title: "analyza"
+author: "Ondra"
+date: "August 26, 2016"
+output: html_document
+---
+
+```{r libraries, echo=FALSE}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(likert))
+```
+
+```{r setup, echo=FALSE}
+setwd("C:/Users/Pavouk/Dropbox/R Studio dokuments/BRIZOLIT BEZPECNOST")
+svl <- read.csv("svl.csv", header = T)
+```
+
+```{r functions, echo=FALSE}
+height <- function(df) {
+	return(dim(df)[1])
+}
+
+getPercentString <- function(count, from) {
+	return(paste(round((100*count)/from, 2), "%", sep = ""))
+}
+
+getCompleteCases <- function(df, by) {
+	return(df[complete.cases(by), ])
+}
+
+factorize <- function(df, colNames) {
+	dl <- lapply(df, factor)
+	return(as.data.frame(dl))
+}
+
+# Likert scales stuff
+lik.table.colnames <- c("","PrÅ¯mÄr", "SmÄr. odch.", "Min.", "Max.")
+renderLikertTable <- function(data, varnames, caption) {
+  # Set human readable variable names
+  names(data) <- varnames
+  lik.melt <- melt(data, na.rm = TRUE)
+  lik.gb <- group_by(lik.melt, variable)
+  lik.sum <- summarize(lik.gb, mean=mean(value), sd=sd(value), min=min(value), max=max(value))
+
+  kable(lik.sum, col.names = lik.table.colnames, caption = caption)
+}
+renderLikertBoxPlot <- function(data, varnames, title) {
+  names(data) <- varnames
+  lik.melt <- melt(data, na.rm = TRUE)
+
+  ggplot(lik.melt, aes(x=variable, y=value)) +
+    geom_boxplot() +
+    theme_light() +
+    #coord_flip() +
+    scale_y_discrete(breaks = c(1:7)) +
+    labs(title = title, x = "", y = "") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+  names(data) <- varnames
+  if (length(by) > 1) {
+    lik.lik <- likert(factorize(data), grouping = by)
+  }	else {
+    lik.lik <- likert(factorize(data))
+  }
+  plot(lik.lik)
+}
+
+
+
+soucet <- function(x,y){
+  out <- sum(x + y)
+  out <- return(x + y)
+}
+soucet(5,10)
+
+```
+
+```{r functions, echo =FALSE}
+summary(svl$SEX)
+getPercentString(summary(svl$SEX), NROW(svl$SEX))
+```

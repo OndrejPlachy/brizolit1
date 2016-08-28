@@ -1,0 +1,107 @@
+---
+title: "Deskriptivni analyza"
+author: "Ondrej Plachy"
+date: "August 26, 2016"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r libraries, echo=FALSE}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(likert))
+suppressPackageStartupMessages(library(plyr))
+
+```
+
+```{r, echo = FALSE}
+svl2 <- read.csv("svl2.csv", header = T)
+```
+
+```{r, echo=FALSE}
+getPercentString <- function(count, from) {
+	return(paste(round((100*count)/from, 2), "%", sep = ""))
+}
+
+factorize <- function(df, colNames) {
+	dl <- lapply(df, factor)
+	return(as.data.frame(dl))
+}
+
+```
+
+``` {r, echo=FALSE}
+factorize(svl2)
+```
+---
+# ADMINISTRATIVNI CAST
+---
+``` {r, echo=FALSE}
+"delka rozhovoru"
+summary(svl2$Delka.rozhovoru)
+
+"pocty incidenci"
+
+incidenc1 <- summary(svl2$Pocet.incidencnich.zaznamu)
+incidenc2 <- getPercentString(summary(svl2$Pocet.incidencnich.zaznamu),
+                              NROW(svl2$Pocet.incidencnich.zaznamu))
+incidenc.compl <- data.frame(unclass(summary(svl2$Pocet.incidencnich.zaznamu)), 
+                             check.names = FALSE, stringsAsFactors = FALSE)
+colnames(incidenc.compl) <- c("cetnost")
+incidenc.compl$procent <- incidenc2
+incidenc.compl
+
+
+"Pocty incidenci podle kraje a pohlavi"
+
+tapply(svl2$Pocet.incidencnich.zaznamu, svl2$Kraj, summary)
+tapply(svl2$Pocet.incidencnich.zaznamu, svl2$B.2, summary)
+```
+---
+# SCREENOVACI CAST
+---
+```{r, echo=FALSE}
+"pohlavi"
+sex1 <- summary(svl2$B.2)
+sex2 <- getPercentString(summary(svl2$B.2), NROW(svl2$B.2))
+sex.compl <- data.frame(unclass(summary(svl2$B.2)), check.names = FALSE, stringsAsFactors = FALSE)
+colnames(sex.compl) <- c("cetnost")
+sex.compl$procent <- sex2
+sex.compl
+
+"Kraje"
+kraj1 <- summary(svl2$Kraj)
+kraj2 <- getPercentString(summary(svl2$Kraj), NROW(svl2$Kraj))
+kraj.compl <- data.frame(unclass(summary(svl2$Kraj)), check.names = FALSE, stringsAsFactors = FALSE)
+colnames(kraj.compl) <- c("cetnost")
+kraj.compl$procent <- kraj2
+kraj.compl
+
+"vekove kohorty"
+cohort1 <- summary(svl2$B.5b)
+cohort2 <- getPercentString(summary(svl2$B.5b), NROW(svl2$B.5b))
+cohort.compl <- data.frame(unclass(summary(svl2$B.5b)), check.names = FALSE, stringsAsFactors = FALSE)
+colnames(cohort.compl) <- c("cetnost")
+cohort.compl$procent <- cohort2
+cohort.compl
+
+"vekove kohorty podle pohlavi a podle kraje"
+tapply(svl2$B.5b, svl2$B.2, summary)
+tapply(svl2$B.5b, svl2$Kraj, summary)
+
+"Rodinny status (L.1)"
+status1 <- summary(svl2$L.1)
+status2 <- getPercentString(summary(svl2$L.1), NROW(svl2$L.1))
+status.compl <- data.frame(unclass(summary(svl2$L.1)), check.names = FALSE, stringsAsFactors = FALSE)
+colnames(status.compl) <- c("cetnost")
+status.compl$procent <- status2
+status.compl
+
+
+```
+
+```{r data-transforms, echo=FALSE}
+
+```

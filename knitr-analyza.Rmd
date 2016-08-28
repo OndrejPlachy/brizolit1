@@ -1,0 +1,26 @@
+---
+title: "Analyza dat SVL dotazniku"
+output: html.document
+---
+
+```{r libraries, echo=FALSE}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(likert))
+```
+
+```{r setup, echo=FALSE}
+setwd("C:/Users/Pavouk/Dropbox/R Studio dokuments/BRIZOLIT BEZPECNOST")
+svl <- read.csv("svl.csv", header = T)
+```
+
+```{r functions, echo=FALSE}
+source("functions.R", encoding = "UTF-8")
+```
+
+```{r functions, echo =FALSE}
+summary(svl$SEX)
+getPercentString(summary(svl$SEX), NROW(svl$SEX))
+```
